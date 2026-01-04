@@ -1,0 +1,11 @@
+[project]
+name = "stockmarket"
+version = "0.0.1"
+description = "Stock market Analysis Toolkit"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "flask>=3.1.2",
+    "python-dotenv>=1.2.1",
+    "setuptools>=80.9.0",
+]
