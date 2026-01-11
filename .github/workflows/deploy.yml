@@ -1,0 +1,29 @@
+name: Deploy to Raspberry Pi
+
+on:
+  push:
+    branches:
+      - deployment-branch  # Or 'master', depending on your default branch
+
+jobs:
+  deploy:
+    runs-on: self-hosted  # This tells it to run on YOUR Pi, not GitHub's cloud
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        run: |
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+          
+      - name: Test Run (Optional)
+        run: |
+          source venv/bin/activate
+          # Just printing version or help to ensure env is healthy
+          python3 --version
+      
+      - name: Notify
+        run: echo "Deployment to Pi 5 Complete!"
