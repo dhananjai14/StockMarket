@@ -39,13 +39,12 @@ class MMIDataProvider:
                 )
                 page = await context.new_page()
                 await page.goto("https://www.tickertape.in/market-mood-index?ref=homepage_mmi_section")
-                await page.wait_for_timeout(1000)  # Wait for JS to load content (adjust as needed)
+                await page.wait_for_timeout(500)  # Wait for JS to load content (adjust as needed)
                 await page.evaluate("""
                                 () => {
                                     window.scrollTo(0, document.body.scrollHeight);
                                 }
                         """)
-                await page.wait_for_timeout(3000)
 
                 html = await page.content()
                 cwd = os.getcwd()
