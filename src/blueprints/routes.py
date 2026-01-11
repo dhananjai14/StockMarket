@@ -1,21 +1,44 @@
 from datetime import datetime
-from flask import jsonify
-from flask import Blueprint
-from src.utils.formatting import format_response
-from src.utils.logger_config import get_logger
+from fastapi import APIRouter
+from utils.formatting import format_response
+from services.mmi_trigger import MMITriggerService
+from core_logic.mmi.mmi_provider import MMIDataProvider
+from core_logic.alert import NTFYAlert
+from utils.logger_config import get_logger
 logging = get_logger()
 
-health_check = Blueprint('health_check', __name__)
-@health_check.route('/', methods=['GET'])
-def index():
+router = APIRouter()
+
+
+@router.get("/", tags=["health"])
+async def index():
     logging.info("Health check endpoint hit.")
-    # Use the Service layer for logic
-    current_time = datetime.now()
-    
-    # Use the Utils layer for formatting
+    current_time = datetime.now().isoformat()
     response = format_response(
         message="Welcome. Health check successful.",
         data={"server_time": current_time}
     )
-    return jsonify(response)
+    return response
 
+
+@router.get("/mmi_trigger", tags=["mmi"])
+def trigger_mmi():
+    logging.info("Inside route /mmi_trigger")
+    # Placeholder for MMI trigger logic
+    # Creating the dependencies
+    mmi_data_provider = MMIDataProvider()
+    notification_service = NTFYAlert()
+
+    # Injecting the dependencies into the service
+    mmi_trigger_service = MMITriggerService(mmi_data_provider, notification_service)
+
+    message = mmi_trigger_service.trigger_mmi_alert()
+    
+    # Formatting the response
+    response = format_response(
+        message="/mmi_trigger endpoint hit.",
+        data={"status": message.get("data")},
+        status=message.get('status') #type: ignore
+    )
+    logging.info("MMI process executed.")
+    return response

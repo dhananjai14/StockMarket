@@ -1,17 +1,10 @@
 # Application factory
-from flask import Flask
-from src.config import config
+from fastapi import FastAPI
+from .blueprints.routes import router as api_router
 
-def create_app(config_name='default'):
-    app = Flask(__name__)
-    
-    # Load config
-    app.config.from_object(config[config_name])
+def create_app():
+    app = FastAPI(title="StockMarket-API")
     
     # Register Blueprints
-    from src.blueprints.routes import health_check
-    app.register_blueprint(health_check, url_prefix='/')
-
-
-    
+    app.include_router(api_router, prefix="")
     return app

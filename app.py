@@ -1,4 +1,5 @@
 import os
+import uvicorn
 from src import create_app
 from dotenv import load_dotenv
 from src.utils.logger_config import get_logger
@@ -6,9 +7,8 @@ from src.utils.logger_config import get_logger
 logging = get_logger()
 load_dotenv()
 
-config_name = os.getenv('FLASK_ENV') or 'default'
-logging.info(f"Starting application with config: {config_name}")
-app = create_app(config_name)
+app = create_app()
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # uvicorn.run(app, host=os.getenv("HOST", "127.0.0.1"), port=int(os.getenv("PORT", 8000)), reload=True)
+    uvicorn.run("app:app", host=os.getenv("HOST", "127.0.0.1"), port=int(os.getenv("PORT", 8000)), reload=True)
